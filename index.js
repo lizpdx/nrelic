@@ -1,13 +1,16 @@
+require('newrelic');
+
 var http = require('http');
-var nr = require('newrelic');
 var sleep = require('sleep-async');
-// var sleep = require('sleep');
+
+var Sequelize = require('sequelize');
+var db = new Sequelize('postgres://liz.savage@localhost:5432/actw_development');
 
 var server = http.createServer(function (req, res) {
-	// sleep.sleep(2);
-	sleep().sleep(2000, function() {
-	  res.writeHead(200, {'Content-Type': 'text/html'});
-  	res.end('Hello. The time is now ' + new Date());
+	db.query('SELECT title FROM movies;').then(function(result) {
+		var title = result[0][0].title;
+ 		res.writeHead(200, {'Content-Type': 'text/html'});
+ 		res.end('Here is a random movie title: ' + title);
 	});
 });
 
